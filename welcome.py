@@ -21,11 +21,11 @@ class WelcomeApp(App):
         self.title_label.bind(size=self.title_label.setter('text_size'))
         self.layout.add_widget(self.title_label)
 
-        self.input = TextInput(hint_text='Digite seu nome', size_hint_y=None, height=40)
-        self.layout.add_widget(self.input)
+        self.name_input = TextInput(hint_text='Digite seu nome', size_hint_y=None, height=40)
+        self.layout.add_widget(self.name_input)
 
-        self.input = TextInput(hint_text='Digite sua idade', size_hint_y=None, height=40)
-        self.layout.add_widget(self.input)
+        self.age_input = TextInput(hint_text='Digite sua idade', size_hint_y=None, height=40, input_filter='int')
+        self.layout.add_widget(self.age_input)
 
         self.button = Button(text='Enviar', size_hint_y=None, height=40, background_color=(1, 0, 0, 1))
         self.button.bind(on_press=self.on_button_press)
@@ -37,18 +37,27 @@ class WelcomeApp(App):
         return self.layout
 
     def on_button_press(self, instance):
-        idade = self.input.text.strip()
-        if idade:
-            self.label.text = f'Bem-vindo(a), {idade}!'
-        else:
-            self.label.text = 'Por favor, digite seu nome.'
+        nome = self.name_input.text.strip()
+        idade_texto = self.age_input.text.strip()
 
-    def on_button_press(self, instance):
-        nome = self.input.text.strip()
-        if nome:
-            self.label.text = f'Bem-vindo(a), {nome}!'
-        else:
+        if not nome:
             self.label.text = 'Por favor, digite seu nome.'
+            return
+        else:
+            self.label.text = f'Bem Vindo- {nome}!'
+            
+        if not idade_texto or not idade_texto.isdigit():
+            self.label.text = 'Por favor, digite uma idade.'
+            return
+
+        idade = int(idade_texto)
+        if idade < 18:
+            self.label.text = f'{nome} Você é menor de idade.'
+        elif idade >= 60:
+            self.label.texture_size = (self.label.width, 40)
+            self.label.text = f'Olá, {nome}! Você é idoso e merece muito respeito ❤️.'
+        else:
+            self.label.text = f'{nome} Você é maior de idade.'
 
 if __name__ == '__main__':
     WelcomeApp().run()
